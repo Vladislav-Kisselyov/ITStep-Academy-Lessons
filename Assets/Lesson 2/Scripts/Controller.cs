@@ -18,6 +18,7 @@
         private bool dashButton; //переменная для запоминания нажата ли клавиша рывка
 
         private bool isGrounded = true; //для запоминания касается ли игрок земли в данный момент
+        private bool isDoubleJumpDone = false;
 
         private void Update()
         {
@@ -69,28 +70,48 @@
             {
                 Jump(jumpForce);
             }
+            else if (jumpButton && isGrounded == false && isDoubleJumpDone == false)
+            {
+                isDoubleJumpDone = true; //запоминаем, что это был второй прыжок
+                Jump(jumpForce);
+            }
         }
 
+        //Метод для реализации движения
         private void Move(Vector3 direction)
         {
+            rigidBody.MovePosition(rigidBody.position + direction * runSpeed * Time.deltaTime);
             //Сдвигаем текущую позицию в определенном направлении 
-            transform.position += direction * runSpeed * Time.deltaTime;
+            //transform.position += direction * runSpeed * Time.deltaTime;
         }
 
+        //Метод для реализации прыжка
         private void Jump(float forceAmount)
         {
             //Сообщаем физическому телу силу, по направлению вверх. Получаем прыжок
             rigidBody.AddForce(Vector3.up * forceAmount, ForceMode.Impulse);
         }
 
+        //Метод для реализации рывка
         private void Dash(Vector3 direction, float forceAmount)
         {
+            //Сообщаем физическому телу силу, по направлению direction. Получаем рывок
             rigidBody.AddForce(direction * forceAmount, ForceMode.Impulse);
         }
 
-        private void OnTriggerEnter(Collider other)
+        //Метод Unity, для обработки столкновения с другим твердым объектом
+        private void OnCollisionEnter(Collision collision)
         {
-            Debug.Log(name + " каснулся какого-то триггера!");
+            Debug.Log(name + " столкнулся с землей!");
+            isGrounded = true; //запоминаем, что мы снова касаемся земли
+            isDoubleJumpDone = false; //т.к. мы только что вернулись на землю, запоминаем что двойной прыжок ещё не был сделан.
+        }
+
+        //Метод Unity, для обработки ПРЕКРАЩЕНИЯ столкновения с другим твердым объектом
+        private void OnCollisionExit(Collision collision)
+        {
+            Debug.Log(name + " покинул землю!");
+            isGrounded = false; //запоминаем, что мы больше НЕ касаемся земли
         }
     }
 }
