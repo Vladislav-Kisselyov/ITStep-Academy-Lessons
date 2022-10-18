@@ -2,7 +2,7 @@
 {
     using UnityEngine;
 
-    public class Controller : MonoBehaviour
+    public class ControllerOld : MonoBehaviour
     {
         //Атрибут SerializeField позволяет изменить значение переменной из Инспектора Unity
         [SerializeField] private float runSpeed; //переменная скорости бега
