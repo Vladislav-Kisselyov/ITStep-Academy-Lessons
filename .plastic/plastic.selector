@@ -1,0 +1,4 @@
+repository "ITStep Academy Lessons@TailofTales@cloud"
+  path "/"
+    br "/main"
+    co "/main"
